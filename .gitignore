@@ -3,6 +3,7 @@
 
 # node dependencies
 node_modules
+*-lock.json
 
 # go dependencies
 vendor
@@ -13,3 +14,9 @@ Makefile.properties
 # build artifacts
 bin
 trivy.json
+
+# config
+config.yaml
+
+# debugger
+.vscode

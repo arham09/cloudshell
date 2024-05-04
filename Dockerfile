@@ -15,7 +15,7 @@ RUN go build -a -v \
   -X main.VersionInfo='${VERSION_INFO}' \
   " \
   -o ./bin/cloudshell \
-  ./cmd/cloudshell
+  ./main.go
 
 FROM node:16.0.0-alpine AS frontend
 WORKDIR /app

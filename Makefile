@@ -23,12 +23,12 @@ binary_name := $(image_name)-${GOOS}-${GOARCH}${BIN_EXT}
 
 # initialises the project (run this before all else)
 init:
-	npm install
+	go generate ./...
 	go mod vendor
 
 # start the application (use this in development)
 start:
-	go run ./cmd/cloudshell
+	go run main.go
 
 # runs the application in packaged form
 run: package
@@ -36,6 +36,7 @@ run: package
 
 # builds the application binary
 build:
+	go generate ./...
 	CGO_ENABLED=0 \
 	go build -a -v \
 		-ldflags " \
@@ -43,7 +44,7 @@ build:
 			-extldflags 'static' \
 			-X main.VersionInfo='$(version)' \
 		" \
-		-o ./bin/$(binary_name) ./cmd/cloudshell
+		-o ./bin/$(binary_name) ./main.go
 
 # compresses the application binary
 compress:

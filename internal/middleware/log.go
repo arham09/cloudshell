@@ -1,13 +1,28 @@
-package main
+package middleware
 
 import (
-	"cloudshell/internal/log"
+	"cloudshell/pkg/log"
 	"net/http"
 	"runtime"
+	"time"
 )
 
+func AddIncomingRequestLogging(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		then := time.Now()
+		defer func() {
+			if recovered := recover(); recovered != nil {
+				CreateRequestLog(r).Info("request errored out")
+			}
+		}()
+		next.ServeHTTP(w, r)
+		duration := time.Now().Sub(then)
+		CreateRequestLog(r).Infof("request completed in %vms", float64(duration.Nanoseconds())/1000000)
+	})
+}
+
 // createRequestLog returns a logger with relevant request fields
-func createRequestLog(r *http.Request, additionalFields ...map[string]interface{}) log.Logger {
+func CreateRequestLog(r *http.Request, additionalFields ...map[string]interface{}) log.Logger {
 	fields := map[string]interface{}{}
 	if len(additionalFields) > 0 {
 		fields = additionalFields[0]
@@ -25,7 +40,7 @@ func createRequestLog(r *http.Request, additionalFields ...map[string]interface{
 	return log.WithFields(fields)
 }
 
-func createMemoryLog() log.Logger {
+func CreateMemoryLog() log.Logger {
 	var memStats runtime.MemStats
 	runtime.ReadMemStats(&memStats)
 	return log.WithFields(map[string]interface{}{

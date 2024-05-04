@@ -2,7 +2,7 @@ package xtermjs
 
 import (
 	"bytes"
-	"cloudshell/internal/log"
+	"cloudshell/pkg/log"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -119,7 +119,7 @@ func GetHandler(opts HandlerOpts) func(http.ResponseWriter, *http.Request) {
 					return
 				}
 				time.Sleep(keepalivePingTimeout / 2)
-				if time.Now().Sub(lastPongTime) > keepalivePingTimeout {
+				if time.Since(lastPongTime) > keepalivePingTimeout {
 					clog.Warn("failed to get response from ping, triggering disconnect now...")
 					waiter.Done()
 					return
@@ -143,7 +143,7 @@ func GetHandler(opts HandlerOpts) func(http.ResponseWriter, *http.Request) {
 				readLength, err := tty.Read(buffer)
 				if err != nil {
 					clog.Warnf("failed to read from tty: %s", err)
-					if err := connection.WriteMessage(websocket.TextMessage, []byte("bye!")); err != nil {
+					if err := connection.WriteMessage(websocket.TextMessage, []byte("bye, see you!")); err != nil {
 						clog.Warnf("failed to send termination message from tty to xterm.js: %s", err)
 					}
 					waiter.Done()

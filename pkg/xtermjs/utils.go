@@ -15,7 +15,7 @@ func getConnectionUpgrader(
 	return websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			requesterHostname := r.Host
-			if strings.Index(requesterHostname, ":") != -1 {
+			if strings.Contains(requesterHostname, ":") {
 				requesterHostname = strings.Split(requesterHostname, ":")[0]
 			}
 			for _, allowedHostname := range allowedHostnames {

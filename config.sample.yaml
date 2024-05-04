@@ -1,0 +1,12 @@
+allowedHostnames:
+  - "localhost"
+  - "127.0.0.1"
+arguments:
+command: "/bin/zsh"
+serverAddress: "0.0.0.0"
+maxBufferSizeBytes: 1024
+port: 8080
+connectionErrorLimit: 10
+keepAlivePingTImeout: 20
+logFormat: "text"
+logLevel: "debug"
