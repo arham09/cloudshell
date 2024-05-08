@@ -10,7 +10,7 @@ import (
 
 var conf = config.Map{
 	"allowed-hostnames": &config.StringSlice{
-		Default:   []string{"localhost"},
+		Default:   []string{"localhost", "127.0.0.1"},
 		Usage:     "comma-delimited list of hostnames that are allowed to connect to the websocket",
 		Shorthand: "H",
 	},
@@ -35,7 +35,7 @@ var conf = config.Map{
 		Shorthand: "k",
 	},
 	"max-buffer-size-bytes": &config.Int{
-		Default:   512,
+		Default:   1024,
 		Usage:     "maximum length of input from terminal",
 		Shorthand: "B",
 	},

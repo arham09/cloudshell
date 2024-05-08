@@ -119,7 +119,7 @@ func GetHandler(opts HandlerOpts) func(http.ResponseWriter, *http.Request) {
 					return
 				}
 				time.Sleep(keepalivePingTimeout / 2)
-				if time.Now().Sub(lastPongTime) > keepalivePingTimeout {
+				if time.Since(lastPongTime) > keepalivePingTimeout {
 					clog.Warn("failed to get response from ping, triggering disconnect now...")
 					waiter.Done()
 					return

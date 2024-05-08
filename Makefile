@@ -23,7 +23,7 @@ binary_name := $(image_name)-${GOOS}-${GOARCH}${BIN_EXT}
 
 # initialises the project (run this before all else)
 init:
-	npm install
+	go generate ./...
 	go mod vendor
 
 # start the application (use this in development)

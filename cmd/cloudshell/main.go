@@ -3,6 +3,7 @@ package main
 import (
 	"cloudshell/internal/log"
 	"cloudshell/pkg/xtermjs"
+	"cloudshell/ui"
 	"errors"
 	"fmt"
 	"net/http"
@@ -115,12 +116,18 @@ func runE(_ *cobra.Command, _ []string) error {
 	})
 
 	// this is the endpoint for serving xterm.js assets
-	depenenciesDirectory := path.Join(workingDirectory, "./node_modules")
-	router.PathPrefix("/assets").Handler(http.StripPrefix("/assets", http.FileServer(http.Dir(depenenciesDirectory))))
+	router.PathPrefix("/assets").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ui.ServeAsset(w, r)
+	})
 
 	// this is the endpoint for the root path aka website
-	publicAssetsDirectory := path.Join(workingDirectory, "./public")
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir(publicAssetsDirectory)))
+	publicAssetsDirectory, err := ui.ServePublic()
+	if err != nil {
+		message := fmt.Sprintf("failed to get public embedded directory: %s", err)
+		log.Error(message)
+		return errors.New(message)
+	}
+	router.PathPrefix("/").Handler(http.FileServer(http.FS(publicAssetsDirectory)))
 
 	// start memory logging pulse
 	logWithMemory := createMemoryLog()
